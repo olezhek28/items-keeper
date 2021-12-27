@@ -14,7 +14,8 @@ const (
 )
 
 type ITelegramClient interface {
-	Start() error
+	Start() (tgBotAPI.UpdatesChannel, error)
+	Send(msg tgBotAPI.MessageConfig) error
 }
 
 type client struct {
@@ -25,29 +26,15 @@ func NewClient(tgClient *tgBotAPI.BotAPI) ITelegramClient {
 	return &client{tgBot: tgClient}
 }
 
-func (c *client) Start() error {
+func (c *client) Start() (tgBotAPI.UpdatesChannel, error) {
 	log.Printf("Authorized on account %s", c.tgBot.Self.UserName)
 
-	updates := c.initUpdatesChannel()
-	c.handleUpdates(updates)
-
-	return nil
+	return c.initUpdatesChannel(), nil
 }
 
-func (c *client) handleUpdates(updates tgBotAPI.UpdatesChannel) {
-	for update := range updates {
-		// ignore any non-message updates
-		if update.Message == nil {
-			continue
-		}
-
-		if update.Message.IsCommand() {
-			c.handleCommand(update.Message)
-			continue
-		}
-
-		c.handleMessage(update.Message)
-	}
+func (c *client) Send(msg tgBotAPI.MessageConfig) error {
+	_, err := c.tgBot.Send(msg)
+	return err
 }
 
 func (c *client) initUpdatesChannel() tgBotAPI.UpdatesChannel {
