@@ -4,11 +4,13 @@ package pocket
 
 import (
 	"context"
+	"fmt"
 
 	pocketSDK "github.com/zhashkevych/go-pocket-sdk"
 )
 
 type IPocketClient interface {
+	Authorize(ctx context.Context, requestToken string) (*pocketSDK.AuthorizeResponse, error)
 	GetRequestToken(ctx context.Context, chatID int64) (string, error)
 	GetAuthorizationLink(requestToken string) (string, error)
 }
@@ -23,4 +25,27 @@ func NewClient(pocketSDKClient *pocketSDK.Client, redirectURL string) IPocketCli
 		pocketSDKClient: pocketSDKClient,
 		redirectURL:     redirectURL,
 	}
+}
+
+func (c *client) Authorize(ctx context.Context, requestToken string) (*pocketSDK.AuthorizeResponse, error) {
+	return c.pocketSDKClient.Authorize(ctx, requestToken)
+}
+
+func (c *client) GetRequestToken(ctx context.Context, chatID int64) (string, error) {
+	c.redirectURL = c.generateRedirectURL(chatID)
+
+	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, c.redirectURL)
+	if err != nil {
+		return "", err
+	}
+
+	return requestToken, err
+}
+
+func (c *client) GetAuthorizationLink(requestToken string) (string, error) {
+	return c.pocketSDKClient.GetAuthorizationURL(requestToken, c.redirectURL)
+}
+
+func (c *client) generateRedirectURL(chatID int64) string {
+	return fmt.Sprintf("%s?chat_id=%d", c.redirectURL, chatID)
 }

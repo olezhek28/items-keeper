@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	pocket "github.com/zhashkevych/go-pocket-sdk"
 )
 
 // MockIPocketClient is a mock of IPocketClient interface.
@@ -32,6 +33,21 @@ func NewMockIPocketClient(ctrl *gomock.Controller) *MockIPocketClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockIPocketClient) EXPECT() *MockIPocketClientMockRecorder {
 	return m.recorder
+}
+
+// Authorize mocks base method.
+func (m *MockIPocketClient) Authorize(arg0 context.Context, arg1 string) (*pocket.AuthorizeResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Authorize", arg0, arg1)
+	ret0, _ := ret[0].(*pocket.AuthorizeResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Authorize indicates an expected call of Authorize.
+func (mr *MockIPocketClientMockRecorder) Authorize(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Authorize", reflect.TypeOf((*MockIPocketClient)(nil).Authorize), arg0, arg1)
 }
 
 // GetAuthorizationLink mocks base method.
