@@ -6,9 +6,9 @@ import (
 )
 
 func (c *client) GetRequestToken(ctx context.Context, chatID int64) (string, error) {
-	redirectURL := c.generateRedirectURL(chatID)
+	c.redirectURL = c.generateRedirectURL(chatID)
 
-	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, redirectURL)
+	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, c.redirectURL)
 	if err != nil {
 		return "", err
 	}

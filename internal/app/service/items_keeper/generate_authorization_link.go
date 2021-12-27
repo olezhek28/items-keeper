@@ -6,7 +6,7 @@ import (
 	"github.com/olezhek28/items-keeper/internal/app/repository"
 )
 
-func (s *ItemsKeeperService) GenerateAuthorizationLink(ctx context.Context, chatID int64) (string, error) {
+func (s *ItemsKeeperService) generateAuthorizationLink(ctx context.Context, chatID int64) (string, error) {
 	requestToken, err := s.pocketClient.GetRequestToken(ctx, chatID)
 	if err != nil {
 		return "", err

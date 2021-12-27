@@ -1,6 +1,8 @@
 package items_keeper
 
 import (
+	"context"
+	"fmt"
 	"log"
 
 	tgBotAPI "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -32,7 +34,13 @@ func (s *ItemsKeeperService) handleMessage(message *tgBotAPI.Message) error {
 }
 
 func (s *ItemsKeeperService) handleCommandStart(message *tgBotAPI.Message) error {
-	msg := tgBotAPI.NewMessage(message.Chat.ID, replyStartTemplate)
+	ctx := context.Background()
+	authLink, err := s.generateAuthorizationLink(ctx, message.Chat.ID)
+	if err != nil {
+		return err
+	}
+
+	msg := tgBotAPI.NewMessage(message.Chat.ID, fmt.Sprintf(replyStartTemplate, authLink))
 
 	return s.tgClient.Send(msg)
 }
