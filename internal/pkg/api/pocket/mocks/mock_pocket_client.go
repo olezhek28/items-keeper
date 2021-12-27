@@ -35,6 +35,20 @@ func (m *MockIPocketClient) EXPECT() *MockIPocketClientMockRecorder {
 	return m.recorder
 }
 
+// Add mocks base method.
+func (m *MockIPocketClient) Add(arg0 context.Context, arg1, arg2 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Add", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Add indicates an expected call of Add.
+func (mr *MockIPocketClientMockRecorder) Add(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockIPocketClient)(nil).Add), arg0, arg1, arg2)
+}
+
 // Authorize mocks base method.
 func (m *MockIPocketClient) Authorize(arg0 context.Context, arg1 string) (*pocket.AuthorizeResponse, error) {
 	m.ctrl.T.Helper()

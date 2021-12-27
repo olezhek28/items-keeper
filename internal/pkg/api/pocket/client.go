@@ -10,6 +10,7 @@ import (
 )
 
 type IPocketClient interface {
+	Add(ctx context.Context, accessToken, URL string) error
 	Authorize(ctx context.Context, requestToken string) (*pocketSDK.AuthorizeResponse, error)
 	GetRequestToken(ctx context.Context, chatID int64) (string, error)
 	GetAuthorizationLink(requestToken string) (string, error)
@@ -25,6 +26,13 @@ func NewClient(pocketSDKClient *pocketSDK.Client, redirectURL string) IPocketCli
 		pocketSDKClient: pocketSDKClient,
 		redirectURL:     redirectURL,
 	}
+}
+
+func (c *client) Add(ctx context.Context, accessToken, URL string) error {
+	return c.pocketSDKClient.Add(ctx, pocketSDK.AddInput{
+		URL:         URL,
+		AccessToken: accessToken,
+	})
 }
 
 func (c *client) Authorize(ctx context.Context, requestToken string) (*pocketSDK.AuthorizeResponse, error) {
