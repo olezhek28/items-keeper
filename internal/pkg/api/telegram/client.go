@@ -16,15 +16,15 @@ type ITelegramClient interface {
 }
 
 type client struct {
-	tgClient *tgBotAPI.BotAPI
+	tgBot *tgBotAPI.BotAPI
 }
 
 func NewClient(tgClient *tgBotAPI.BotAPI) ITelegramClient {
-	return &client{tgClient: tgClient}
+	return &client{tgBot: tgClient}
 }
 
 func (c *client) Start() error {
-	log.Printf("Authorized on account %s", c.tgClient.Self.UserName)
+	log.Printf("Authorized on account %s", c.tgBot.Self.UserName)
 
 	updates := c.initUpdatesChannel()
 	c.handleUpdates(updates)
@@ -52,5 +52,5 @@ func (c *client) initUpdatesChannel() tgBotAPI.UpdatesChannel {
 	u := tgBotAPI.NewUpdate(offset)
 	u.Timeout = timeout
 
-	return c.tgClient.GetUpdatesChan(u)
+	return c.tgBot.GetUpdatesChan(u)
 }

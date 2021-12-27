@@ -28,19 +28,19 @@ func (c *client) handleMessage(message *tgBotAPI.Message) {
 
 	msg := tgBotAPI.NewMessage(message.Chat.ID, message.Text)
 
-	c.tgClient.Send(msg)
+	c.tgBot.Send(msg)
 }
 
 func (c *client) handleCommandStart(message *tgBotAPI.Message) error {
 	msg := tgBotAPI.NewMessage(message.Chat.ID, replyStartTemplate)
 
-	_, err := c.tgClient.Send(msg)
+	_, err := c.tgBot.Send(msg)
 	return err
 }
 
 func (c *client) handleUnknownCommand(message *tgBotAPI.Message) error {
 	msg := tgBotAPI.NewMessage(message.Chat.ID, "Я не знаю такую команду")
 
-	_, err := c.tgClient.Send(msg)
+	_, err := c.tgBot.Send(msg)
 	return err
 }

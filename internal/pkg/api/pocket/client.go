@@ -6,13 +6,13 @@ type IPocketClient interface {
 }
 
 type client struct {
-	pocketClient *pocketSDK.Client
-	redirectURL  string
+	pocketSDKClient *pocketSDK.Client
+	redirectURL     string
 }
 
-func NewClient(pocketClient *pocketSDK.Client, redirectURL string) IPocketClient {
+func NewClient(pocketSDKClient *pocketSDK.Client, redirectURL string) IPocketClient {
 	return &client{
-		pocketClient: pocketClient,
-		redirectURL:  redirectURL,
+		pocketSDKClient: pocketSDKClient,
+		redirectURL:     redirectURL,
 	}
 }

@@ -8,12 +8,12 @@ import (
 func (c *client) generateAuthorizationLink(ctx context.Context, chatID int64) (string, error) {
 	redirectURL := c.generateRedirectURL(chatID)
 
-	requestToken, err := c.pocketClient.GetRequestToken(ctx, redirectURL)
+	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, redirectURL)
 	if err != nil {
 		return "", err
 	}
 
-	return c.pocketClient.GetAuthorizationURL(requestToken, c.redirectURL)
+	return c.pocketSDKClient.GetAuthorizationURL(requestToken, c.redirectURL)
 }
 
 func (c *client) generateRedirectURL(chatID int64) string {
