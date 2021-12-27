@@ -39,17 +39,13 @@ func (c *client) handleUpdates(updates tgBotAPI.UpdatesChannel) {
 			continue
 		}
 
+		if update.Message.IsCommand() {
+			c.handleCommand(update.Message)
+			continue
+		}
+
 		c.handleMessage(update.Message)
 	}
-}
-
-func (c *client) handleMessage(message *tgBotAPI.Message) {
-	log.Printf("[%s] %s", message.From.UserName, message.Text)
-
-	msg := tgBotAPI.NewMessage(message.Chat.ID, message.Text)
-	msg.ReplyToMessageID = message.MessageID
-
-	c.bot.Send(msg)
 }
 
 func (c *client) initUpdatesChannel() tgBotAPI.UpdatesChannel {
