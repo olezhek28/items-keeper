@@ -1,5 +1,7 @@
 package telegram
 
+//go:generate mockgen --build_flags=--mod=mod -destination=mocks/mock_telegram_client.go -package=mocks . ITelegramClient
+
 import (
 	"log"
 

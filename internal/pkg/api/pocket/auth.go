@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (c *client) generateAuthorizationLink(ctx context.Context, chatID int64) (string, error) {
+func (c *client) GetRequestToken(ctx context.Context, chatID int64) (string, error) {
 	redirectURL := c.generateRedirectURL(chatID)
 
 	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, redirectURL)
@@ -13,6 +13,10 @@ func (c *client) generateAuthorizationLink(ctx context.Context, chatID int64) (s
 		return "", err
 	}
 
+	return requestToken, err
+}
+
+func (c *client) GetAuthorizationLink(requestToken string) (string, error) {
 	return c.pocketSDKClient.GetAuthorizationURL(requestToken, c.redirectURL)
 }
 
