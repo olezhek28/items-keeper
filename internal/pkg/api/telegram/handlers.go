@@ -1,25 +1,26 @@
 package telegram
 
 import (
-	"fmt"
 	"log"
 
 	tgBotAPI "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const commandStart = "start"
+const (
+	commandStart = "start"
+)
+
+const (
+	replyStartTemplate = "Привет! Чтобы сохранять ссылки в своем Pocket аккаунте, для начала тебе необходимо дать мне на это доступ. Для этого переходи по ссылке:\n%s"
+)
 
 func (c *client) handleCommand(message *tgBotAPI.Message) error {
-	msg := tgBotAPI.NewMessage(message.Chat.ID, "Я не знаю такую команду")
-
 	switch message.Command() {
 	case commandStart:
-		msg.Text = fmt.Sprintf("Привет, %s", message.From.FirstName)
+		return c.handleCommandStart(message)
 	default:
+		return c.handleUnknownCommand(message)
 	}
-
-	_, err := c.bot.Send(msg)
-	return err
 }
 
 func (c *client) handleMessage(message *tgBotAPI.Message) {
@@ -27,5 +28,19 @@ func (c *client) handleMessage(message *tgBotAPI.Message) {
 
 	msg := tgBotAPI.NewMessage(message.Chat.ID, message.Text)
 
-	c.bot.Send(msg)
+	c.tgClient.Send(msg)
+}
+
+func (c *client) handleCommandStart(message *tgBotAPI.Message) error {
+	msg := tgBotAPI.NewMessage(message.Chat.ID, replyStartTemplate)
+
+	_, err := c.tgClient.Send(msg)
+	return err
+}
+
+func (c *client) handleUnknownCommand(message *tgBotAPI.Message) error {
+	msg := tgBotAPI.NewMessage(message.Chat.ID, "Я не знаю такую команду")
+
+	_, err := c.tgClient.Send(msg)
+	return err
 }
