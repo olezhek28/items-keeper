@@ -6,6 +6,11 @@ import (
 	tgBotAPI "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+const (
+	timeout = 60
+	offset  = 0
+)
+
 type ITelegramClient interface {
 	Start() error
 }
@@ -19,26 +24,37 @@ func NewClient(bot *tgBotAPI.BotAPI) ITelegramClient {
 }
 
 func (c *client) Start() error {
-	c.bot.Debug = true
-
 	log.Printf("Authorized on account %s", c.bot.Self.UserName)
 
-	u := tgBotAPI.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := c.bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		// If we got a message
-		if update.Message != nil {
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-			msg := tgBotAPI.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
-
-			c.bot.Send(msg)
-		}
-	}
+	updates := c.initUpdatesChannel()
+	c.handleUpdates(updates)
 
 	return nil
+}
+
+func (c *client) handleUpdates(updates tgBotAPI.UpdatesChannel) {
+	for update := range updates {
+		// ignore any non-message updates
+		if update.Message == nil {
+			continue
+		}
+
+		c.handleMessage(update.Message)
+	}
+}
+
+func (c *client) handleMessage(message *tgBotAPI.Message) {
+	log.Printf("[%s] %s", message.From.UserName, message.Text)
+
+	msg := tgBotAPI.NewMessage(message.Chat.ID, message.Text)
+	msg.ReplyToMessageID = message.MessageID
+
+	c.bot.Send(msg)
+}
+
+func (c *client) initUpdatesChannel() tgBotAPI.UpdatesChannel {
+	u := tgBotAPI.NewUpdate(offset)
+	u.Timeout = timeout
+
+	return c.bot.GetUpdatesChan(u)
 }
