@@ -25,10 +25,17 @@ func (s *ItemsKeeperService) handleUpdates(updates tgBotAPI.UpdatesChannel) {
 		}
 
 		if update.Message.IsCommand() {
-			s.handleCommand(update.Message)
+			err := s.handleCommand(update.Message)
+			if err != nil {
+				s.handleError(update.Message.Chat.ID, err)
+			}
+
 			continue
 		}
 
-		s.handleMessage(update.Message)
+		err := s.handleMessage(update.Message)
+		if err != nil {
+			s.handleError(update.Message.Chat.ID, err)
+		}
 	}
 }

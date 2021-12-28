@@ -17,9 +17,6 @@ const (
 	replyStartTemplate     = "Привет! Чтобы сохранять ссылки в своем Pocket аккаунте, для начала тебе необходимо дать мне на это доступ. Для этого переходи по ссылке:\n%s"
 	replayAlreadyAuthorize = "Ты уже авторизирован, брат! можешь пользоваться. Кидай ссылку, а я её сохраню."
 	replaySuccessSaveLink  = "Твоя ссылка успешно сохранена!"
-	replayFailedSaveLink   = "Не удалось сохранить ссылку:( Попробуй ещё разок)"
-	replyInvalidLink       = "Твоя ссылка невалидная:( Попробуй исправить это, я верю в тебя!"
-	replayUnauthorized     = "Ты ещё не авторизирован. Вызови команду /start"
 )
 
 func (s *ItemsKeeperService) handleCommand(message *tgBotAPI.Message) error {
@@ -36,20 +33,17 @@ func (s *ItemsKeeperService) handleMessage(message *tgBotAPI.Message) error {
 
 	_, err := url.ParseRequestURI(message.Text)
 	if err != nil {
-		msg = tgBotAPI.NewMessage(message.Chat.ID, replyInvalidLink)
-		return s.tgClient.Send(msg)
+		return errorInvalidLink
 	}
 
 	accessToken, err := s.getAccessToken(message.Chat.ID)
 	if err != nil {
-		msg = tgBotAPI.NewMessage(message.Chat.ID, replayUnauthorized)
-		return s.tgClient.Send(msg)
+		return errorUnauthorized
 	}
 
 	err = s.pocketClient.Add(context.Background(), accessToken, message.Text)
 	if err != nil {
-		msg = tgBotAPI.NewMessage(message.Chat.ID, replayFailedSaveLink)
-		return s.tgClient.Send(msg)
+		return errorFailedSaveLink
 	}
 
 	return s.tgClient.Send(msg)
