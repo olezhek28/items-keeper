@@ -6,3 +6,9 @@ build:
 
 run: build
 	./bin/items_keeper_bot
+
+build-image:
+	docker build -t items_keeper_bot:v0.1 .
+
+start-container:
+	docker run --name items_keeper_bot -p 80:80 --env-file .env items_keeper_bot:v0.1
