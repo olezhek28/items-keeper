@@ -1,0 +1,2 @@
+db_file: "items-keeper.db"
+telegram_bot_url: "https://t.me/items_keeper_bot"
