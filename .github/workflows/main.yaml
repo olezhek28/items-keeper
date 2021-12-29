@@ -55,8 +55,8 @@ jobs:
             docker rm $(echo $CONTAINER_NAME)
 
             # Set env variables
-            export TOKEN=${{ secrets.TELEGRAM_TOKEN }}
-            export CONSUMER_KEY=${{ secrets.POCKET_CONSUMER_KEY }}
+            export TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
+            export POCKET_CONSUMER_KEY=${{ secrets.POCKET_CONSUMER_KEY }}
             export AUTH_SERVER_URL=${{ secrets.AUTH_SERVER_URL }}
 
             # Run a new container from a new image
