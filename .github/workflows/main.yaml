@@ -60,8 +60,10 @@ jobs:
             export AUTH_SERVER_URL=${{ secrets.AUTH_SERVER_URL }}
 
             # Run a new container from a new image
-            docker run -e TELEGRAM_TOKEN -e POCKET_CONSUMER_KEY -e AUTH_SERVER_URL -d \
-            --restart always \
-            --publish 80:80 \
-            --name $(echo $CONTAINER_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+            docker run -d -p 80:80 --name $(echo $CONTAINER_NAME) -e TELEGRAM_TOKEN -e POCKET_CONSUMER_KEY -e AUTH_SERVER_URL -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+
+#            docker run -e TELEGRAM_TOKEN -e POCKET_CONSUMER_KEY -e AUTH_SERVER_URL -d \
+#            --restart always \
+#            --publish 80:80 \
+#            --name $(echo $CONTAINER_NAME) \
+#            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
