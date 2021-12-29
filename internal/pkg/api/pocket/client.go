@@ -13,7 +13,7 @@ type IPocketClient interface {
 	Add(ctx context.Context, accessToken, URL string) error
 	Authorize(ctx context.Context, requestToken string) (*pocketSDK.AuthorizeResponse, error)
 	GetRequestToken(ctx context.Context, chatID int64) (string, error)
-	GetAuthorizationLink(requestToken string) (string, error)
+	GetAuthorizationLink(requestToken string, chatID int64) (string, error)
 }
 
 type client struct {
@@ -40,9 +40,9 @@ func (c *client) Authorize(ctx context.Context, requestToken string) (*pocketSDK
 }
 
 func (c *client) GetRequestToken(ctx context.Context, chatID int64) (string, error) {
-	c.redirectURL = c.generateRedirectURL(chatID)
+	redirectURL := c.generateRedirectURL(chatID)
 
-	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, c.redirectURL)
+	requestToken, err := c.pocketSDKClient.GetRequestToken(ctx, redirectURL)
 	if err != nil {
 		return "", err
 	}
@@ -50,8 +50,8 @@ func (c *client) GetRequestToken(ctx context.Context, chatID int64) (string, err
 	return requestToken, err
 }
 
-func (c *client) GetAuthorizationLink(requestToken string) (string, error) {
-	return c.pocketSDKClient.GetAuthorizationURL(requestToken, c.redirectURL)
+func (c *client) GetAuthorizationLink(requestToken string, chatID int64) (string, error) {
+	return c.pocketSDKClient.GetAuthorizationURL(requestToken, c.generateRedirectURL(chatID))
 }
 
 func (c *client) generateRedirectURL(chatID int64) string {

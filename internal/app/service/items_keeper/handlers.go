@@ -79,7 +79,7 @@ func (s *ItemsKeeperService) generateAuthorizationLink(ctx context.Context, chat
 		return "", err
 	}
 
-	return s.pocketClient.GetAuthorizationLink(requestToken)
+	return s.pocketClient.GetAuthorizationLink(requestToken, chatID)
 }
 
 func (s *ItemsKeeperService) getAccessToken(chatID int64) (string, error) {
