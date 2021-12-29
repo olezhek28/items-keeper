@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: "registry.digitalocean.com/items-keeper-bot"
-  IMAGE_NAME: "items-keeper-bot"
+  IMAGE_NAME: "items-keeper-bot-image"
   CONTAINER_NAME: "items-keeper-bot"
 
 jobs:
